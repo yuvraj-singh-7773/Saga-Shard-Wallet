@@ -1,10 +1,7 @@
 package com.example.shardedSagaWallet.entities;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.calcite.model.JsonType;
-
 
 @Data
 @Entity
@@ -21,7 +18,6 @@ public class SagaInstance {
     @Column(name = "status", nullable = false)
     private SagaStatus status = SagaStatus.STARTED;
 
-    @JsonSubTypes.Type(JsonType.class)
     @Column(name = "context", columnDefinition = "json")
     private String context;
 

@@ -1,14 +1,19 @@
 package com.example.shardedSagaWallet.service.saga.steps;
 
 
+import com.example.shardedSagaWallet.entities.SagaInstance;
 import com.example.shardedSagaWallet.entities.Wallet;
+import com.example.shardedSagaWallet.repository.SagaInstanceRepository;
 import com.example.shardedSagaWallet.repository.WalletRepository;
 import com.example.shardedSagaWallet.service.saga.SagaContext;
 import com.example.shardedSagaWallet.service.saga.SagaStepInterface;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 import java.math.BigDecimal;
 
@@ -18,6 +23,7 @@ import java.math.BigDecimal;
 public class DebitSourceWalletStep implements SagaStepInterface {
 
     private final WalletRepository walletRepository;
+    private final Wallet wallet;
 
     @Override
     @Transactional
@@ -33,8 +39,12 @@ public class DebitSourceWalletStep implements SagaStepInterface {
         log.info("Wallet fetched with balance {}", wallet.getBalance());
         context.put("originalSourceWalletBalance", wallet.getBalance());
 
-        wallet.debit(amount);
-        walletRepository.save(wallet);
+        if (!wallet.hasSufficientBalance(amount)) {
+            log.info("Insufficient balance in source wallet {}. Current balance: {}, required amount: {}", fromWalletId, wallet.getBalance(), amount);
+            throw new RuntimeException("Insufficient balance in source wallet");
+        }
+
+        walletRepository.updateBalanceByUserId(fromWalletId, wallet.getBalance().subtract(amount));
 
         log.info("Wallet saved with balance {}", wallet.getBalance());
         context.put("sourceWalletBalanceAfterDebit", wallet.getBalance());
@@ -62,8 +72,7 @@ public class DebitSourceWalletStep implements SagaStepInterface {
         context.put("sourceWalletBalanceBeforeCreditCompensation", wallet.getBalance());
 
 
-        wallet.credit(amount);
-        walletRepository.save(wallet);
+        walletRepository.updateBalanceByUserId(fromWalletId, wallet.getBalance().add(amount));
 
         log.info("Wallet saved with balance {}", wallet.getBalance());
         context.put("sourceWalletBalanceAfterCreditCompensation", wallet.getBalance());

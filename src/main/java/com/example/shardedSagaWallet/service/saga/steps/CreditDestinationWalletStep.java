@@ -1,9 +1,13 @@
 package com.example.shardedSagaWallet.service.saga.steps;
 
+import com.example.shardedSagaWallet.entities.SagaInstance;
 import com.example.shardedSagaWallet.entities.Wallet;
+import com.example.shardedSagaWallet.repository.SagaInstanceRepository;
 import com.example.shardedSagaWallet.repository.WalletRepository;
 import com.example.shardedSagaWallet.service.saga.SagaContext;
 import com.example.shardedSagaWallet.service.saga.SagaStepInterface;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +38,9 @@ public class CreditDestinationWalletStep implements SagaStepInterface {
         log.info("Wallet fetched with balance {}", wallet.getBalance());
         context.put("originalToWalletBalance", wallet.getBalance());
 
+
         // Step 3: Credit the destination wallet
-        wallet.credit(amount);
-        walletRepository.save(wallet);
+        walletRepository.updateBalanceByUserId(toWalletId, wallet.getBalance().add(amount));
         log.info("Wallet saved with balance {}", wallet.getBalance());
 
         context.put("toWalletBalanceAfterCredit", wallet.getBalance());
@@ -61,8 +65,7 @@ public class CreditDestinationWalletStep implements SagaStepInterface {
         log.info("Wallet fetched with balance {}", wallet.getBalance());
 
         // Step 3: Credit the destination wallet
-        wallet.debit(amount);
-        walletRepository.save(wallet);
+        walletRepository.updateBalanceByUserId(toWalletId, wallet.getBalance().subtract(amount));
         log.info("Wallet saved with balance {}", wallet.getBalance());
         context.put("toWalletBalanceAfterCreditCompensation", wallet.getBalance());
 

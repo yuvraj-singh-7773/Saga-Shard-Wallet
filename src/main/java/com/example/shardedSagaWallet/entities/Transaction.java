@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 @Table(name = "transaction")
 @Data
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@Builder
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +28,17 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private TransactionStatus status = TransactionStatus.PENDING;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(name = "transaction_type", nullable = false)
+    @Column(name = "transaction_type")
     private TransactionType type = TransactionType.TRANSFER;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "saga_instance_id")

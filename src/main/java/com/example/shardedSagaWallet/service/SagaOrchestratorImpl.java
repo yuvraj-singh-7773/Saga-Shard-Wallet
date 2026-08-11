@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -123,7 +124,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator {
                         null // no such step found in the db
                 );
 
-        if(sagaStepDB.getId() == null) {
+        if (sagaStepDB == null) {
             log.info("Step {} not found in the db for saga instance {}, so it is already compensated or not executed", stepName, sagaInstanceId);
             return true;
         }

@@ -24,6 +24,7 @@ public class SagaStep {
     @Column(name = "step_name", nullable = false)
     private String stepName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StepStatus status;
 

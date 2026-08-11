@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "wallet")
 @Builder
+@Component
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -19,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TransferSagaService {
     private final TransactionService transactionService;
-    private SagaOrchestrator sagaOrchestrator;
+    private final SagaOrchestrator sagaOrchestrator;
 
 
     @Transactional
@@ -34,13 +35,13 @@ public class TransferSagaService {
         Transaction transaction = transactionService.createTransaction(fromWalletId, toWalletId, amount, description);
 
         SagaContext sagaContext = SagaContext.builder()
-                .data(Map.ofEntries(
+                .data((Map.ofEntries(
                         Map.entry("transactionId", transaction.getId()),
                         Map.entry("fromWalletId", fromWalletId),
                         Map.entry("toWalletId", toWalletId),
                         Map.entry("amount", amount),
                         Map.entry("description", description)
-                ))
+                )))
                 .build();
 
         Long sagaInstanceId = sagaOrchestrator.startSaga(sagaContext);

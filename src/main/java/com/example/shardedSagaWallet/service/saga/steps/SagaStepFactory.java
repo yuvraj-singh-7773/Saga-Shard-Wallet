@@ -25,7 +25,7 @@ public class SagaStepFactory {
             SagaStepFactory.SagaStepType.UPDATE_TRANSACTION_STATUS_STEP
     );
 
-    public SagaStepInterface getSagaStep(String stepName) {
+    public SagaStepInterface getSagaStep(String stepName)  {
         return sagaStepMap.get(stepName);
     }
 }

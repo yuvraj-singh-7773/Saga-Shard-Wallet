@@ -5,6 +5,7 @@ import com.example.shardedSagaWallet.service.saga.steps.CreditDestinationWalletS
 import com.example.shardedSagaWallet.service.saga.steps.DebitSourceWalletStep;
 import com.example.shardedSagaWallet.service.saga.steps.SagaStepFactory;
 import com.example.shardedSagaWallet.service.saga.steps.UpdateTransactionStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +14,11 @@ import java.util.Map;
 
 @Configuration
 public class SagaConfiguration {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 
     @Bean
     public Map<String, SagaStepInterface> sagaStepMap(

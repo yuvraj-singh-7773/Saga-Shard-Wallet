@@ -2,7 +2,7 @@ package com.example.shardedSagaWallet.controller;
 
 import com.example.shardedSagaWallet.entities.User;
 import com.example.shardedSagaWallet.service.UserService;
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
